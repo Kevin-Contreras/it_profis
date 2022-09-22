@@ -13,6 +13,7 @@ CREATE TABLE vehiculo(
 CREATE TABLE piloto(
     id int  IDENTITY(1,1) PRIMARY key,
     nombre char(20),
+    numero INT,
     viaticos  char(10),
     gastos_adicionales  char(10),
     inicio  char(10),

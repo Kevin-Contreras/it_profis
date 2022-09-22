@@ -8,6 +8,7 @@ var sqlServer =  new (require("rest-mssql-nodejs"))({
     server:"localhost",
     database:"proyecto"
 })
+var id =0;
 const connectionString = "server=localhost; user:SA;password: Alexis123 ;Database=proyecto;Trusted_Connection=Yes;Driver={SQL Server Native Client 11.0}";
 router.get("/",function(req,res,next){
 res.send("<h1>HOLA</h1>")
@@ -27,14 +28,31 @@ router.post("/login",jsonParser,async function(req,res,next){
     const resultados2 = await sqlServer.executeQuery("delete from vehiculo where id = "+"'"+parseInt( req.body.vehiculo)+"'")
     console.log(resultados2)
     const resultados3 = await sqlServer.executeQuery("delete from piloto where nombre = "+"'"+req.body.conductor+"'")
+ 
 
     
 })
 
 
+
+router.post("/actualizar/:ida",jsonParser, async function(req,res,next){
+    console.log(req.params.ida.slice(1))
+    console.log("hola")
+    const resultados = await sqlServer.executeQuery("UPDATE piloto SET numero = "+"'"+req.body.telefono+"', viaticos = "+"'"+req.body.viaticos+"', gastos_adicionales = '"+ req.body.adicionales+"' WHERE id = '"+ req.params.ida.slice(1)+"'")
+   
+    console.log(resultados)
+})
+router.post("/actualizar2/:id",jsonParser, async function(req,res,next){
+    console.log(req.params.id.slice(1))
+    console.log("hola")
+    const resultados4 = await sqlServer.executeQuery("UPDATE vehiculo SET capacidad = "+"'"+req.body.capacidad+"', combustible = "+"'"+req.body.combustible+"', recorrido = '"+ req.body.recorrido+"' WHERE id = '"+ req.params.id.slice(1)+"'")
+   
+    console.log(resultados4)
+})
 router.get("/mostar",jsonParser, async function(req,res,next){
       
       const  re = await sqlServer.executeQuery('select * from piloto')
+      console.log(re.data)
         res.json(re.data[0])
             
 
@@ -73,10 +91,12 @@ router.post("/carros",jsonParser,async function(req,res,next){
 
 })
 router.post("/piloto", jsonParser,async function(req,res,next){
-    console.log( req.body)
-    const resultado = await sqlServer.executeQuery('INSERT INTO piloto (nombre,viaticos,gastos_adicionales,inicio,final) values (@nombre,@viaticos,@gastos_adicionales,@inicio,@final)',
+    console.log( req.body.telefono)
+    console.log("kkk")
+    const resultado = await sqlServer.executeQuery('INSERT INTO piloto (nombre,numero,viaticos,gastos_adicionales,inicio,final) values (@nombre,@numero,@viaticos,@gastos_adicionales,@inicio,@final)',
     [
     {name:"nombre",type:"char", value:req.body.nombre},
+    {name:"numero",type:"int", value:parseInt( req.body.telefono)},
     {name:"viaticos",type:"char",value:req.body.viaticos},
     {name:"gastos_adicionales",type:"char",value:req.body.adicionales},
     {name:"inicio",type:"char",value:null},
